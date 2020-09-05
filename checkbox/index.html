@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../axios.min.js"></script>
+    <style>
+        #app{
+            margin: 0 auto;
+            width: 400px;
+        }
+        button{
+            width: 100px;
+            height: 30px;
+            background: pink;
+            border: none;
+            margin: 20px 10px;
+            outline: none;
+        }
+        .i{
+           
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <checked></checked>
+    </div>
+    <template id="checkbox">
+        <div>
+            <h2>选择您的爱好</h2>
+            <label v-for='item in option'>
+                <input type="checkbox" v-model='item.checked'>{{item.like}}
+            </label>
+            <button @click = 'ctrl'>全选</button>
+            <button @click = 'cancel'>取消</button>
+            <button @click = 'side'>反选</button>
+        </div>
+    </template>
+    <script>
+        Vue.component('checked',{
+            template:'#checkbox',
+            created() {
+                axios.get("./checkbox.json").then((res)=>{
+                   this.option = res.data
+                   console.log(this.option);
+                })
+            },
+            data(){
+                return{
+                   option:[]
+                }
+            },
+            methods: {
+                ctrl(){   //全选
+                   this.option.forEach(res => {
+                       res.checked = true
+                   });
+                },
+                cancel(){   //取消
+                    this.option.forEach(res => {
+                       res.checked = false
+                   });
+                },
+                side(){   //反选
+                    this.option.forEach(res => {
+                       res.checked = !res.checked
+                   });
+                }
+            },
+        })
+
+
+        new Vue({
+        el:'#app',
+        data:{
+        },
+        })
+    </script>
+</body>
+</html>

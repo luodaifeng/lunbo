@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../axios.min.js"></script>
+    <script src="../mock.js"></script>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="app">
+      <lunbo></lunbo>
+    </div>
+
+    <template id="lunbo">
+      <div class="main">
+        <ul @mouseenter="clear" @mouseleave="continues">
+          <template v-for="(items, index) in imgUrl">
+            <li v-for="(img,index) in items" class="li">
+              <img :src="img.imgUrl" :class="{option:currentIndex===index}" />
+            </li>
+          </template>
+        </ul>
+        <ul class="index">
+          <li
+            v-for="(item,index) in imgUrl.list"
+            :class="{liColor:currentIndex===index}"
+          >
+            {{index}}
+          </li>
+        </ul>
+      </div>
+    </template>
+    <script src="./data.js"></script>
+    <script>
+      Vue.component("lunbo", {
+        template: "#lunbo",
+        data() {
+          return {
+            imgUrl: [],
+            currentIndex: 0,
+            imglength: 4,
+            cleartime: null,
+          };
+        },
+        created() {
+          this.axios();
+          this.timer();
+        },
+        methods: {
+          axios: function () {   //axios函数
+            axios.get("mock-data").then((res) => {
+              this.imgUrl = res.data;
+              this.imglength = res.data.list.length;
+            });
+          },
+          timer: function () {  //定时器函数
+            clearInterval(this.cleartime);
+            this.cleartime = setInterval(() => {
+              this.currentIndex++;
+              if (this.currentIndex >= this.imglength) {
+                this.currentIndex = 0;
+              }
+            }, 1000);
+          },
+          clear() {   //鼠标移入
+            clearInterval(this.cleartime);
+          },
+          continues() {  //鼠标移开
+            this.a();
+          },
+        },
+      });
+
+      new Vue({
+        el: "#app",
+        data: {},
+      });
+    </script>
+  </body>
+</html>
